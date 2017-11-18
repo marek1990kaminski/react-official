@@ -48,3 +48,10 @@ ol, ul {
 .game-info {
     margin-left : 20px;
 }
+
+.bolder{
+    background-color: darkseagreen;
+}
+.normal{
+    background-color: darkgray;
+}

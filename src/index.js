@@ -4,32 +4,35 @@ import Board from './components/board';
 import './index.css';
 
 
-
 class Game extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             history: [{
                 squares: Array(9).fill(null),
+                clickedField: undefined,
             }],
             stepNumber: 0,
+            currentlyViewedMove: null,
             xIsNext: true,
         };
     }
 
-    handleClick(i) {
-        const history = this.state.history.slice(0, this.state.stepNumber + 1);
-        const current = history[history.length - 1];
-        const squares = current.squares.slice();
+    handleClick(i) {//co bedzie mial przekazane?
+        const history = this.state.history.slice(0, this.state.stepNumber + 1);//przy pierwszym ruchu to jest array o jednym slocie
+        const current = history[history.length - 1];//wskazuje ostatni ruch - caly obiekt
+        const squares = current.squares.slice();//kopia arraya
         if (squares[i] || calculateWinner(squares)) {
             return;
         }
         squares[i] = this.state.xIsNext ? 'X' : 'O';
         this.setState({
             history: history.concat([{
-                squares: squares
+                squares: squares,//tu trzeba bylo oblec obiekt w ramki arraya
+                clickedField: i
             }]),
             stepNumber: history.length,
+            currentlyViewedMove: null,
             xIsNext: !this.state.xIsNext
         });
     }
@@ -43,21 +46,39 @@ class Game extends React.Component {
 
     render() {
         const history = this.state.history;
+        console.log(this.state);
         const current = history[this.state.stepNumber];
         const winner = calculateWinner(current.squares);
 
+
         const moves = history.map(
             (step, move) => {
+
+                let klass ="";
+                if (move === this.state.currentlyViewedMove){
+                    klass = "bolder";
+                }
+
                 const desc = move ?
-                    'Go to move #' + move :
+                    'Go to move #' + move + '. It was ' + (step.clickedField % 3 + 1) + ' col and ' + Math.ceil(step.clickedField / 3) + ' row' :
                     'Go to game start';
                 return (
                     <li key={move}>
-                        <button onClick={() => this.jumpTo(move)}>{desc}</button>
+                        <button
+                            onClick={
+                            () => {
+                                this.jumpTo(move);
+                                this.setState({currentlyViewedMove:move});
+                            }
+                        }
+                            className={klass}
+                        >{desc}</button>
                     </li>
                 );
             }
         );
+
+        //////STATUS//////////
         let status;
         if (winner) {
             status = "Winner: " + winner;
