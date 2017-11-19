@@ -55,3 +55,7 @@ ol, ul {
 .normal{
     background-color: darkgray;
 }
+
+.colored{
+    background-color : dodgerblue;
+}

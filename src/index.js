@@ -32,7 +32,6 @@ class Game extends React.Component {
                 clickedField: i
             }]),
             stepNumber: history.length,
-            currentlyViewedMove: null,
             xIsNext: !this.state.xIsNext
         });
     }
@@ -46,6 +45,7 @@ class Game extends React.Component {
 
     render() {
         const history = this.state.history;
+        console.log("index.js state :");
         console.log(this.state);
         const current = history[this.state.stepNumber];
         const winner = calculateWinner(current.squares);

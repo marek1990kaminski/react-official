@@ -4,10 +4,13 @@ import Square from './square';
 class Board extends React.Component {
 
     renderSquare(i) {
+        console.log("WC in board " + this.props.winnerCombination);
         return (
             <Square
                 value={this.props.squares[i]}
                 onClick={() => this.props.onClick(i)}
+                winnerCombination={this.props.winnerCombination}
+                number={i}
             />
         )
     }
