@@ -22,7 +22,7 @@ class Game extends React.Component {
         const history = this.state.history.slice(0, this.state.stepNumber + 1);//przy pierwszym ruchu to jest array o jednym slocie
         const current = history[history.length - 1];//wskazuje ostatni ruch - caly obiekt
         const squares = current.squares.slice();//kopia arraya
-        if (squares[i] || calculateWinner(squares)) {
+        if (squares[i] || calculateWinner(squares).whoWon) {
             return;
         }
         squares[i] = this.state.xIsNext ? 'X' : 'O';
@@ -48,14 +48,14 @@ class Game extends React.Component {
         console.log("index.js state :");
         console.log(this.state);
         const current = history[this.state.stepNumber];
-        const winner = calculateWinner(current.squares);
+        const winnerInfo = calculateWinner(current.squares);
 
 
         const moves = history.map(
             (step, move) => {
 
-                let klass ="";
-                if (move === this.state.currentlyViewedMove){
+                let klass = "";
+                if (move === this.state.currentlyViewedMove) {
                     klass = "bolder";
                 }
 
@@ -66,11 +66,11 @@ class Game extends React.Component {
                     <li key={move}>
                         <button
                             onClick={
-                            () => {
-                                this.jumpTo(move);
-                                this.setState({currentlyViewedMove:move});
+                                () => {
+                                    this.jumpTo(move);
+                                    this.setState({currentlyViewedMove: move});
+                                }
                             }
-                        }
                             className={klass}
                         >{desc}</button>
                     </li>
@@ -80,8 +80,8 @@ class Game extends React.Component {
 
         //////STATUS//////////
         let status;
-        if (winner) {
-            status = "Winner: " + winner;
+        if (winnerInfo.whoWon) {
+            status = "Winner: " + winnerInfo.whoWon;
         } else {
             status = "Next player " + (this.state.xIsNext ? 'X' : 'O');
         }
@@ -92,6 +92,7 @@ class Game extends React.Component {
                     <Board
                         squares={current.squares}
                         onClick={(i) => this.handleClick(i)}
+                        winnerInfo={winnerInfo}
                     />
                 </div>
                 <div className="game-info">
@@ -119,10 +120,10 @@ function calculateWinner(squares) {
         const [a, b, c] = lines[i];
         if (squares[a] &&
             squares[a] === squares[b] && squares[a] === squares[c]) {
-            return squares[a];
+            return {whoWon: squares[a], set: lines[i]};
         }
     }
-    return null;
+    return {whoWon: undefined, set: undefined};
 }
 
 // ========================================
